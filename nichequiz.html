@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheNicheQuiz.com — AI Quiz Platform Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --accent: #f59e0b;
+  --accent-dark: #d97706;
+  --accent-glow: rgba(245,158,11,0.15);
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111827;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(255,255,255,0.08);
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.06);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0d1520 100%);
+  color: var(--text-primary); min-height: 100vh; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 20px 0; color: var(--text-secondary); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500; transition: color 0.2s;
+}
+.back:hover { color: var(--accent); }
+
+.hero { text-align: center; padding: 60px 0 80px; animation: fadeInUp 0.8s ease-out; }
+.hero-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 100px;
+  background: var(--accent-glow); border: 1px solid rgba(245,158,11,0.2);
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 24px;
+}
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), #fbbf24);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero .hook { font-size: 1.25rem; color: var(--text-secondary); font-style: italic; font-weight: 300; }
+
+.section { padding: 60px 0; animation: fadeInUp 0.6s ease-out both; }
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px; }
+.section h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
+.section p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; max-width: 700px; }
+
+.glass { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 32px; backdrop-filter: blur(10px); }
+
+.solution-list { list-style: none; margin-top: 20px; }
+.solution-list li { padding: 12px 0; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1rem; display: flex; align-items: flex-start; gap: 12px; }
+.solution-list li:last-child { border-bottom: none; }
+.solution-list .check { color: var(--accent); font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+
+/* Flow */
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 24px; }
+.flow-step {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 20px 14px; text-align: center;
+  position: relative; transition: border-color 0.3s, transform 0.3s;
+}
+.flow-step:hover { border-color: rgba(245,158,11,0.3); transform: translateY(-3px); }
+.flow-step .num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-glow); border: 1px solid rgba(245,158,11,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--accent); margin: 0 auto 12px;
+}
+.flow-step .icon { font-size: 24px; margin-bottom: 8px; }
+.flow-step .label { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+.flow-step .sublabel { font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; }
+.flow-step:not(:last-child)::after {
+  content: '→'; position: absolute; right: -16px; top: 50%;
+  transform: translateY(-50%); color: var(--accent); font-size: 14px; opacity: 0.5;
+}
+
+.tech-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tech-pill {
+  padding: 8px 18px; border-radius: 100px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  font-size: 0.85rem; font-weight: 500; color: var(--text-secondary);
+  transition: border-color 0.2s, color 0.2s;
+}
+.tech-pill:hover { border-color: rgba(245,158,11,0.3); color: var(--accent); }
+
+.results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+.result-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 28px 20px; text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.result-card:hover { border-color: rgba(245,158,11,0.3); transform: translateY(-3px); }
+.result-card .number {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent), #fbbf24);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 6px;
+}
+.result-card .label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+/* Quiz Mockup */
+.mockup-container {
+  margin-top: 24px; border-radius: 16px; overflow: hidden;
+  background: linear-gradient(135deg, #121016, #1a1520);
+  border: 1px solid var(--glass-border); padding: 24px;
+}
+.mockup-titlebar { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+.mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mockup-dot.r { background: #ef4444; } .mockup-dot.y { background: #f59e0b; } .mockup-dot.g { background: #10b981; }
+.mockup-url-bar {
+  flex: 1; margin-left: 16px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; padding: 0 14px; font-size: 13px; color: var(--text-secondary);
+}
+
+/* Quiz UI mockup */
+.quiz-mock { max-width: 500px; margin: 0 auto; }
+.quiz-progress-bar {
+  height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,0.06); margin-bottom: 8px; overflow: hidden;
+}
+.quiz-progress-fill {
+  height: 100%; width: 60%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), #fbbf24);
+}
+.quiz-progress-text {
+  font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 28px; text-align: right;
+}
+.quiz-question {
+  font-size: 1.2rem; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 24px; text-align: center; line-height: 1.4;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option {
+  padding: 16px 20px; border-radius: 12px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.95rem; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+.quiz-option:hover {
+  border-color: rgba(245,158,11,0.4);
+  background: rgba(245,158,11,0.05);
+}
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: rgba(245,158,11,0.08);
+  color: var(--text-primary);
+}
+.quiz-option .letter {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+}
+.quiz-option.selected .letter {
+  background: var(--accent); color: #000;
+}
+.quiz-next {
+  margin-top: 20px; width: 100%; padding: 14px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #000; font-weight: 700; font-size: 0.95rem; text-align: center;
+  border: none;
+}
+.quiz-branding {
+  margin-top: 20px; text-align: center;
+  font-size: 0.7rem; color: var(--text-secondary); opacity: 0.5;
+}
+
+.cta { text-align: center; padding: 80px 0; animation: fadeInUp 0.6s ease-out both; animation-delay: 0.3s; }
+.cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+.cta p { color: var(--text-secondary); margin-bottom: 28px; font-size: 1.05rem; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #000; font-weight: 700; font-size: 1rem;
+  text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,158,11,0.3); }
+
+.footer { text-align: center; padding: 40px 0; border-top: 1px solid var(--border-color); }
+.footer .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px; color: var(--text-secondary);
+}
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  .hero { padding: 40px 0 50px; }
+  .flow { grid-template-columns: 1fr; gap: 8px; }
+  .flow-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -14px; transform: translateX(-50%); }
+  .results-grid { grid-template-columns: repeat(2, 1fr); }
+  .section h2 { font-size: 1.4rem; }
+}
+@media (max-width: 480px) { .results-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back">← Back to Portfolio</a>
+
+  <section class="hero">
+    <div class="hero-label">🧠 Full SaaS Build</div>
+    <h1>TheNicheQuiz.com — <span>AI Quiz Platform</span></h1>
+    <p class="hook">"Full SaaS product from idea to live in one session"</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Challenge</div>
+    <h2>Lead Gen Quizzes Are Expensive to Build</h2>
+    <div class="glass">
+      <p>Businesses want interactive quizzes to engage audiences and capture leads, but building custom quiz apps requires <strong style="color:var(--text-primary)">weeks of development</strong> and multiple tools. Off-the-shelf quiz builders lack the flexibility and branding control businesses need to stand out.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Solution</div>
+    <h2>Idea → Live SaaS in One Day</h2>
+    <p>Built a complete SaaS platform that generates AI-powered niche quizzes with everything included:</p>
+    <ul class="solution-list">
+      <li><span class="check">✓</span> AI generates quiz questions for any niche — fitness, finance, cooking, tech, anything</li>
+      <li><span class="check">✓</span> Full authentication system with Clerk — users sign up, log in, manage quizzes</li>
+      <li><span class="check">✓</span> Stripe payment processing for premium features and subscriptions</li>
+      <li><span class="check">✓</span> Custom branding — colors, logos, domains per quiz</li>
+      <li><span class="check">✓</span> Lead capture and analytics dashboard for quiz creators</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section-label">How It Works</div>
+    <h2>5 Steps to Live Quiz</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <div class="icon">🎯</div>
+        <div class="label">Choose Niche</div>
+        <div class="sublabel">Any topic</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <div class="icon">🤖</div>
+        <div class="label">AI Generates</div>
+        <div class="sublabel">Questions + answers</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <div class="icon">🎨</div>
+        <div class="label">Customize</div>
+        <div class="sublabel">Branding + style</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <div class="icon">🚀</div>
+        <div class="label">Deploy</div>
+        <div class="sublabel">Custom domain</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <div class="icon">📊</div>
+        <div class="label">Collect Leads</div>
+        <div class="sublabel">Analytics dashboard</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Tech Stack</div>
+    <h2>Built With</h2>
+    <div class="tech-grid">
+      <span class="tech-pill">Next.js</span>
+      <span class="tech-pill">PostgreSQL</span>
+      <span class="tech-pill">Auth (Clerk)</span>
+      <span class="tech-pill">Stripe</span>
+      <span class="tech-pill">Claude API</span>
+      <span class="tech-pill">Cloudflare</span>
+      <span class="tech-pill">Tailwind CSS</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Results</div>
+    <h2>Impact at a Glance</h2>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="number">1 Day</div>
+        <div class="label">Idea to Live Product</div>
+      </div>
+      <div class="result-card">
+        <div class="number">∞</div>
+        <div class="label">Niches Supported</div>
+      </div>
+      <div class="result-card">
+        <div class="number">Full</div>
+        <div class="label">Auth + Payments</div>
+      </div>
+      <div class="result-card">
+        <div class="number">Custom</div>
+        <div class="label">Domain Support</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Product Preview</div>
+    <h2>The Quiz Interface</h2>
+    <div class="mockup-container">
+      <div class="mockup-titlebar">
+        <span class="mockup-dot r"></span>
+        <span class="mockup-dot y"></span>
+        <span class="mockup-dot g"></span>
+        <div class="mockup-url-bar">thenichequiz.com/quiz/fitness-iq</div>
+      </div>
+      <div class="quiz-mock">
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill"></div></div>
+        <div class="quiz-progress-text">Question 6 of 10</div>
+        <div class="quiz-question">What's the most effective rep range for building muscle hypertrophy?</div>
+        <div class="quiz-options">
+          <div class="quiz-option">
+            <span class="letter">A</span>
+            <span>1–3 reps (strength focus)</span>
+          </div>
+          <div class="quiz-option selected">
+            <span class="letter">B</span>
+            <span>8–12 reps (hypertrophy range)</span>
+          </div>
+          <div class="quiz-option">
+            <span class="letter">C</span>
+            <span>15–20 reps (endurance focus)</span>
+          </div>
+          <div class="quiz-option">
+            <span class="letter">D</span>
+            <span>25+ reps (cardio territory)</span>
+          </div>
+        </div>
+        <div class="quiz-next">Next Question →</div>
+        <div class="quiz-branding">Powered by TheNicheQuiz.com</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Want something like this?</h2>
+    <p>Let's build your SaaS product at record speed.</p>
+    <a href="mailto:hello@example.com" class="cta-btn">Get in Touch →</a>
+  </section>
+
+  <footer class="footer">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Built with Claude Code
+    </div>
+  </footer>
+</div>
+</body>
+</html>

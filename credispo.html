@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CREdispo — Commercial Real Estate Lead Gen Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --accent: #10b981;
+  --accent-dark: #059669;
+  --accent-glow: rgba(16,185,129,0.15);
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111827;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(255,255,255,0.08);
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.06);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0a1510 100%);
+  color: var(--text-primary); min-height: 100vh; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 20px 0; color: var(--text-secondary); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500; transition: color 0.2s;
+}
+.back:hover { color: var(--accent); }
+
+.hero { text-align: center; padding: 60px 0 80px; animation: fadeInUp 0.8s ease-out; }
+.hero-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 100px;
+  background: var(--accent-glow); border: 1px solid rgba(16,185,129,0.2);
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 24px;
+}
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), #34d399);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero .hook { font-size: 1.25rem; color: var(--text-secondary); font-style: italic; font-weight: 300; }
+
+.section { padding: 60px 0; animation: fadeInUp 0.6s ease-out both; }
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px; }
+.section h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
+.section p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; max-width: 700px; }
+
+.glass { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 32px; backdrop-filter: blur(10px); }
+
+.solution-list { list-style: none; margin-top: 20px; }
+.solution-list li { padding: 12px 0; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1rem; display: flex; align-items: flex-start; gap: 12px; }
+.solution-list li:last-child { border-bottom: none; }
+.solution-list .check { color: var(--accent); font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+
+/* Flow */
+.flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 24px; }
+.flow-step {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 18px 10px; text-align: center;
+  position: relative; transition: border-color 0.3s, transform 0.3s;
+}
+.flow-step:hover { border-color: rgba(16,185,129,0.3); transform: translateY(-3px); }
+.flow-step .num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent-glow); border: 1px solid rgba(16,185,129,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--accent); margin: 0 auto 10px;
+}
+.flow-step .icon { font-size: 22px; margin-bottom: 6px; }
+.flow-step .label { font-size: 0.75rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+.flow-step .sublabel { font-size: 0.65rem; color: var(--text-secondary); margin-top: 3px; }
+.flow-step:not(:last-child)::after {
+  content: '→'; position: absolute; right: -13px; top: 50%;
+  transform: translateY(-50%); color: var(--accent); font-size: 12px; opacity: 0.5;
+}
+
+.tech-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tech-pill {
+  padding: 8px 18px; border-radius: 100px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  font-size: 0.85rem; font-weight: 500; color: var(--text-secondary);
+  transition: border-color 0.2s, color 0.2s;
+}
+.tech-pill:hover { border-color: rgba(16,185,129,0.3); color: var(--accent); }
+
+.results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+.result-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 28px 20px; text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.result-card:hover { border-color: rgba(16,185,129,0.3); transform: translateY(-3px); }
+.result-card .number {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent), #34d399);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 6px;
+}
+.result-card .label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+/* Dashboard Mockup */
+.mockup-container {
+  margin-top: 24px; border-radius: 16px; overflow: hidden;
+  background: linear-gradient(135deg, #0c1210, #0f1a15);
+  border: 1px solid var(--glass-border); padding: 24px;
+}
+.mockup-titlebar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mockup-dot.r { background: #ef4444; } .mockup-dot.y { background: #f59e0b; } .mockup-dot.g { background: #10b981; }
+.mockup-url-bar {
+  flex: 1; margin-left: 16px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; padding: 0 14px; font-size: 13px; color: var(--text-secondary);
+}
+
+/* Dashboard layout */
+.dash-top { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.dash-stat {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 14px; text-align: center;
+}
+.dash-stat .ds-num { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+.dash-stat .ds-label { font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* Table */
+.dash-table {
+  width: 100%; border-collapse: collapse; margin-bottom: 16px;
+}
+.dash-table th {
+  text-align: left; font-size: 0.7rem; font-weight: 600; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.dash-table td {
+  padding: 12px; font-size: 0.8rem; color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.dash-table tr:hover td { background: rgba(255,255,255,0.02); }
+.score-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700;
+}
+.score-badge.high { background: rgba(16,185,129,0.15); color: #10b981; }
+.score-badge.mid { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.score-badge.low { background: rgba(239,68,68,0.15); color: #ef4444; }
+.prop-name { color: var(--text-primary); font-weight: 600; }
+
+/* Map mockup */
+.dash-map {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; height: 140px; position: relative; overflow: hidden;
+}
+/* Grid lines for map feel */
+.dash-map::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    linear-gradient(rgba(16,185,129,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16,185,129,0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.map-pin {
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid; transform: translate(-50%, -50%);
+}
+.map-pin::after {
+  content: ''; position: absolute; width: 20px; height: 20px;
+  border-radius: 50%; top: -5px; left: -5px;
+  animation: ping 2s ease-out infinite;
+}
+.map-pin.high { border-color: #10b981; background: rgba(16,185,129,0.3); }
+.map-pin.high::after { background: rgba(16,185,129,0.15); }
+.map-pin.mid { border-color: #f59e0b; background: rgba(245,158,11,0.3); }
+.map-pin.mid::after { background: rgba(245,158,11,0.15); }
+.map-pin.low { border-color: #ef4444; background: rgba(239,68,68,0.3); }
+.map-pin.low::after { background: rgba(239,68,68,0.15); }
+.map-label {
+  position: absolute; bottom: 8px; right: 12px;
+  font-size: 0.7rem; color: var(--text-secondary); opacity: 0.5;
+}
+
+.cta { text-align: center; padding: 80px 0; animation: fadeInUp 0.6s ease-out both; animation-delay: 0.3s; }
+.cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+.cta p { color: var(--text-secondary); margin-bottom: 28px; font-size: 1.05rem; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #000; font-weight: 700; font-size: 1rem;
+  text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(16,185,129,0.3); }
+
+.footer { text-align: center; padding: 40px 0; border-top: 1px solid var(--border-color); }
+.footer .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px; color: var(--text-secondary);
+}
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ping { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.5); opacity: 0; } }
+
+@media (max-width: 768px) {
+  .hero { padding: 40px 0 50px; }
+  .flow { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .flow-step:nth-child(3)::after, .flow-step:nth-child(6)::after { display: none; }
+  .results-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-top { grid-template-columns: repeat(2, 1fr); }
+  .dash-table { font-size: 0.75rem; }
+  .section h2 { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+  .results-grid { grid-template-columns: 1fr; }
+  .dash-top { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back">← Back to Portfolio</a>
+
+  <section class="hero">
+    <div class="hero-label">🏢 Lead Gen Automation</div>
+    <h1>CREdispo — <span>CRE Lead Gen</span></h1>
+    <p class="hook">"Automated pipeline from property data to qualified leads"</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Challenge</div>
+    <h2>Manual Prospecting Is a Time Sink</h2>
+    <div class="glass">
+      <p>Commercial real estate investors waste hours manually searching for properties, cross-referencing owner info, and qualifying leads across <strong style="color:var(--text-primary)">multiple databases</strong>. The process is tedious, error-prone, and burns <strong style="color:var(--text-primary)">20+ hours per week</strong> that should be spent closing deals.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Solution</div>
+    <h2>20 Hours → 2 Minutes</h2>
+    <p>Built an automated lead generation platform that handles the entire pipeline:</p>
+    <ul class="solution-list">
+      <li><span class="check">✓</span> Scrapes property databases automatically — no manual searching</li>
+      <li><span class="check">✓</span> Enriches records with owner contact information and financial data</li>
+      <li><span class="check">✓</span> AI scores leads based on custom investment criteria (cap rate, location, distress signals)</li>
+      <li><span class="check">✓</span> Queues outreach with personalized messaging templates</li>
+      <li><span class="check">✓</span> Dashboard for 2-minute daily review of top-scored leads</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section-label">How It Works</div>
+    <h2>End-to-End Pipeline</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <div class="icon">🏗️</div>
+        <div class="label">Property DBs</div>
+        <div class="sublabel">Data sources</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <div class="icon">🤖</div>
+        <div class="label">Auto Scraping</div>
+        <div class="sublabel">Nightly runs</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <div class="icon">📋</div>
+        <div class="label">Enrichment</div>
+        <div class="sublabel">Owner + contact</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <div class="icon">🧠</div>
+        <div class="label">AI Scoring</div>
+        <div class="sublabel">Custom criteria</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <div class="icon">📤</div>
+        <div class="label">Outreach Queue</div>
+        <div class="sublabel">Auto-personalized</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">6</div>
+        <div class="icon">📊</div>
+        <div class="label">Dashboard</div>
+        <div class="sublabel">2-min review</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Tech Stack</div>
+    <h2>Built With</h2>
+    <div class="tech-grid">
+      <span class="tech-pill">Next.js</span>
+      <span class="tech-pill">PostgreSQL</span>
+      <span class="tech-pill">Python (scraping)</span>
+      <span class="tech-pill">AI Scoring</span>
+      <span class="tech-pill">Reonomy API</span>
+      <span class="tech-pill">Cloudflare</span>
+      <span class="tech-pill">Cron Jobs</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Results</div>
+    <h2>Impact at a Glance</h2>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="number">2 min</div>
+        <div class="label">Daily Review (was 20hrs/wk)</div>
+      </div>
+      <div class="result-card">
+        <div class="number">500+</div>
+        <div class="label">Leads Per Run</div>
+      </div>
+      <div class="result-card">
+        <div class="number">AI</div>
+        <div class="label">Scored Lead Quality</div>
+      </div>
+      <div class="result-card">
+        <div class="number">Auto</div>
+        <div class="label">Outreach Pipeline</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Product Preview</div>
+    <h2>The Dashboard</h2>
+    <div class="mockup-container">
+      <div class="mockup-titlebar">
+        <span class="mockup-dot r"></span>
+        <span class="mockup-dot y"></span>
+        <span class="mockup-dot g"></span>
+        <div class="mockup-url-bar">credispo.app/dashboard</div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="dash-top">
+        <div class="dash-stat">
+          <div class="ds-num">547</div>
+          <div class="ds-label">Total Leads</div>
+        </div>
+        <div class="dash-stat">
+          <div class="ds-num">84</div>
+          <div class="ds-label">Hot Leads</div>
+        </div>
+        <div class="dash-stat">
+          <div class="ds-num">23</div>
+          <div class="ds-label">In Outreach</div>
+        </div>
+        <div class="dash-stat">
+          <div class="ds-num">7</div>
+          <div class="ds-label">Responded</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Owner</th>
+            <th>Score</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="prop-name">1420 Commerce Blvd</td>
+            <td>Office</td>
+            <td>Smith Holdings LLC</td>
+            <td><span class="score-badge high">● 94</span></td>
+            <td style="color:var(--accent);">Ready</td>
+          </tr>
+          <tr>
+            <td class="prop-name">890 Industrial Pkwy</td>
+            <td>Warehouse</td>
+            <td>Pacific Realty Group</td>
+            <td><span class="score-badge high">● 87</span></td>
+            <td style="color:var(--accent);">Ready</td>
+          </tr>
+          <tr>
+            <td class="prop-name">2200 Market St</td>
+            <td>Retail</td>
+            <td>Chen Family Trust</td>
+            <td><span class="score-badge mid">● 72</span></td>
+            <td style="color:#f59e0b;">Enriching</td>
+          </tr>
+          <tr>
+            <td class="prop-name">455 Tech Center Dr</td>
+            <td>Office</td>
+            <td>Vanguard Properties</td>
+            <td><span class="score-badge mid">● 65</span></td>
+            <td style="color:#f59e0b;">Enriching</td>
+          </tr>
+          <tr>
+            <td class="prop-name">3100 Riverside Ave</td>
+            <td>Mixed Use</td>
+            <td>River Bend Inv.</td>
+            <td><span class="score-badge low">● 34</span></td>
+            <td style="color:var(--text-secondary);">Low Priority</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Map -->
+      <div class="dash-map">
+        <div class="map-pin high" style="top:25%;left:30%;"></div>
+        <div class="map-pin high" style="top:40%;left:55%;"></div>
+        <div class="map-pin mid" style="top:60%;left:35%;"></div>
+        <div class="map-pin mid" style="top:30%;left:70%;"></div>
+        <div class="map-pin low" style="top:70%;left:65%;"></div>
+        <div class="map-pin high" style="top:45%;left:20%;"></div>
+        <div class="map-pin low" style="top:55%;left:80%;"></div>
+        <div class="map-pin mid" style="top:20%;left:45%;"></div>
+        <span class="map-label">Property locations — scored by AI</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Want something like this?</h2>
+    <p>Let's automate your lead generation pipeline.</p>
+    <a href="mailto:hello@example.com" class="cta-btn">Get in Touch →</a>
+  </section>
+
+  <footer class="footer">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Built with Claude Code
+    </div>
+  </footer>
+</div>
+</body>
+</html>

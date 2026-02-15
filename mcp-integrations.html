@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30+ Enterprise AI Integrations — Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --accent: #8b5cf6;
+  --accent-dark: #6d28d9;
+  --accent-glow: rgba(139,92,246,0.15);
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111827;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(255,255,255,0.08);
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.06);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0d1520 100%);
+  color: var(--text-primary); min-height: 100vh; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 20px 0; color: var(--text-secondary); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500; transition: color 0.2s;
+}
+.back:hover { color: var(--accent); }
+
+.hero { text-align: center; padding: 60px 0 80px; animation: fadeInUp 0.8s ease-out; }
+.hero-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 100px;
+  background: var(--accent-glow); border: 1px solid rgba(139,92,246,0.2);
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 24px;
+}
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero .hook { font-size: 1.25rem; color: var(--text-secondary); font-style: italic; font-weight: 300; }
+
+.section { padding: 60px 0; animation: fadeInUp 0.6s ease-out both; }
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px; }
+.section h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
+.section p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; max-width: 700px; }
+
+.glass { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 32px; backdrop-filter: blur(10px); }
+
+.solution-list { list-style: none; margin-top: 20px; }
+.solution-list li { padding: 12px 0; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1rem; display: flex; align-items: flex-start; gap: 12px; }
+.solution-list li:last-child { border-bottom: none; }
+.solution-list .check { color: var(--accent); font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+
+/* Hub and spoke */
+.hub-spoke { position: relative; width: 100%; max-width: 600px; margin: 40px auto; aspect-ratio: 1; }
+.hub-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-size: 28px; z-index: 2;
+  box-shadow: 0 0 60px rgba(139,92,246,0.4), 0 0 120px rgba(139,92,246,0.1);
+}
+.hub-center .hub-label { font-size: 10px; font-weight: 700; color: white; margin-top: 2px; letter-spacing: 0.05em; }
+.spoke-node {
+  position: absolute; width: 72px; height: 72px; border-radius: 50%;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-size: 11px; font-weight: 600; color: var(--text-secondary); text-align: center;
+  transform: translate(-50%, -50%);
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(5px);
+}
+.spoke-node:hover {
+  border-color: rgba(139,92,246,0.4); transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 0 20px rgba(139,92,246,0.2);
+}
+.spoke-node .s-icon { font-size: 20px; margin-bottom: 2px; }
+/* Connecting lines done via SVG */
+.spoke-lines {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+}
+.spoke-lines line { stroke: rgba(139,92,246,0.15); stroke-width: 1; stroke-dasharray: 4 4; }
+
+/* 12 nodes around circle */
+.spoke-node:nth-child(1) { top: 5%; left: 50%; }
+.spoke-node:nth-child(2) { top: 11%; left: 75%; }
+.spoke-node:nth-child(3) { top: 27%; left: 92%; }
+.spoke-node:nth-child(4) { top: 50%; left: 97%; }
+.spoke-node:nth-child(5) { top: 73%; left: 92%; }
+.spoke-node:nth-child(6) { top: 89%; left: 75%; }
+.spoke-node:nth-child(7) { top: 95%; left: 50%; }
+.spoke-node:nth-child(8) { top: 89%; left: 25%; }
+.spoke-node:nth-child(9) { top: 73%; left: 8%; }
+.spoke-node:nth-child(10) { top: 50%; left: 3%; }
+.spoke-node:nth-child(11) { top: 27%; left: 8%; }
+.spoke-node:nth-child(12) { top: 11%; left: 25%; }
+
+/* Outer ring count badge */
+.outer-badge {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 16px;
+  padding: 8px 20px; border-radius: 100px;
+  background: var(--accent-glow); border: 1px solid rgba(139,92,246,0.2);
+  font-size: 13px; font-weight: 600; color: var(--accent);
+}
+
+.tech-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tech-pill {
+  padding: 8px 18px; border-radius: 100px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  font-size: 0.85rem; font-weight: 500; color: var(--text-secondary);
+  transition: border-color 0.2s, color 0.2s;
+}
+.tech-pill:hover { border-color: rgba(139,92,246,0.3); color: var(--accent); }
+
+.results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+.result-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 28px 20px; text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.result-card:hover { border-color: rgba(139,92,246,0.3); transform: translateY(-3px); }
+.result-card .number {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 6px;
+}
+.result-card .label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+/* Mockup: Hub-spoke diagram */
+.mockup-container {
+  margin-top: 24px; border-radius: 16px; overflow: hidden;
+  background: linear-gradient(135deg, #0c0f1a, #13102a);
+  border: 1px solid var(--glass-border); padding: 32px;
+}
+.mockup-titlebar { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+.mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mockup-dot.r { background: #ef4444; } .mockup-dot.y { background: #f59e0b; } .mockup-dot.g { background: #10b981; }
+.mockup-url-bar {
+  flex: 1; margin-left: 16px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; padding: 0 14px; font-size: 13px; color: var(--text-secondary);
+}
+
+/* Integration list mockup */
+.int-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.int-item {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 10px;
+}
+.int-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.int-info .int-name { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); }
+.int-info .int-tools { font-size: 0.7rem; color: var(--text-secondary); }
+.int-status { margin-left: auto; width: 8px; height: 8px; border-radius: 50%; background: #10b981; flex-shrink: 0; }
+
+.cta { text-align: center; padding: 80px 0; animation: fadeInUp 0.6s ease-out both; animation-delay: 0.3s; }
+.cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+.cta p { color: var(--text-secondary); margin-bottom: 28px; font-size: 1.05rem; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white; font-weight: 700; font-size: 1rem;
+  text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.3); }
+
+.footer { text-align: center; padding: 40px 0; border-top: 1px solid var(--border-color); }
+.footer .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px; color: var(--text-secondary);
+}
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  .hero { padding: 40px 0 50px; }
+  .hub-spoke { max-width: 340px; }
+  .spoke-node { width: 56px; height: 56px; font-size: 9px; }
+  .spoke-node .s-icon { font-size: 16px; }
+  .hub-center { width: 76px; height: 76px; font-size: 22px; }
+  .results-grid { grid-template-columns: repeat(2, 1fr); }
+  .int-list { grid-template-columns: 1fr; }
+  .section h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back">← Back to Portfolio</a>
+
+  <section class="hero">
+    <div class="hero-label">🔗 Enterprise AI Infrastructure</div>
+    <h1>30+ Enterprise <span>AI Integrations</span></h1>
+    <p class="hook">"Connecting AI to every tool your business already uses"</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Challenge</div>
+    <h2>AI Is Isolated From Your Tools</h2>
+    <div class="glass">
+      <p>Businesses run on <strong style="color:var(--text-primary)">10–20+ SaaS tools</strong> — but AI can't talk to any of them. Manual data entry between systems wastes <strong style="color:var(--text-primary)">20+ hours per week</strong>. Every "AI transformation" project stalls because the AI has no access to real business data.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Solution</div>
+    <h2>MCP: AI Talks to Everything</h2>
+    <p>Built 30+ MCP (Model Context Protocol) server integrations that let AI agents directly control business tools:</p>
+    <ul class="solution-list">
+      <li><span class="check">✓</span> <strong>Stripe</strong> — Create invoices, check subscriptions, process refunds via AI</li>
+      <li><span class="check">✓</span> <strong>HubSpot</strong> — Update CRM records, log activities, manage deals hands-free</li>
+      <li><span class="check">✓</span> <strong>Salesforce</strong> — Query pipeline, update opportunities, generate reports</li>
+      <li><span class="check">✓</span> <strong>Notion</strong> — Create pages, update databases, manage project wikis</li>
+      <li><span class="check">✓</span> <strong>26+ more</strong> — Slack, GitHub, Linear, Jira, Google Workspace, and beyond</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section-label">How It Works</div>
+    <h2>Hub-and-Spoke Architecture</h2>
+    <div class="hub-spoke">
+      <svg class="spoke-lines" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+        <line x1="50" y1="50" x2="50" y2="5" /><line x1="50" y1="50" x2="75" y2="11" />
+        <line x1="50" y1="50" x2="92" y2="27" /><line x1="50" y1="50" x2="97" y2="50" />
+        <line x1="50" y1="50" x2="92" y2="73" /><line x1="50" y1="50" x2="75" y2="89" />
+        <line x1="50" y1="50" x2="50" y2="95" /><line x1="50" y1="50" x2="25" y2="89" />
+        <line x1="50" y1="50" x2="8" y2="73" /><line x1="50" y1="50" x2="3" y2="50" />
+        <line x1="50" y1="50" x2="8" y2="27" /><line x1="50" y1="50" x2="25" y2="11" />
+      </svg>
+      <div class="spoke-node"><span class="s-icon">💳</span>Stripe</div>
+      <div class="spoke-node"><span class="s-icon">🟠</span>HubSpot</div>
+      <div class="spoke-node"><span class="s-icon">☁️</span>Salesforce</div>
+      <div class="spoke-node"><span class="s-icon">📝</span>Notion</div>
+      <div class="spoke-node"><span class="s-icon">💬</span>Slack</div>
+      <div class="spoke-node"><span class="s-icon">🐙</span>GitHub</div>
+      <div class="spoke-node"><span class="s-icon">📋</span>Linear</div>
+      <div class="spoke-node"><span class="s-icon">🎯</span>Jira</div>
+      <div class="spoke-node"><span class="s-icon">📧</span>Gmail</div>
+      <div class="spoke-node"><span class="s-icon">📊</span>Sheets</div>
+      <div class="spoke-node"><span class="s-icon">📁</span>Drive</div>
+      <div class="spoke-node"><span class="s-icon">📅</span>Calendar</div>
+      <div class="hub-center">
+        🧠
+        <span class="hub-label">AI + MCP</span>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <span class="outer-badge">+ 18 more integrations</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Tech Stack</div>
+    <h2>Built With</h2>
+    <div class="tech-grid">
+      <span class="tech-pill">TypeScript</span>
+      <span class="tech-pill">MCP Protocol</span>
+      <span class="tech-pill">REST APIs</span>
+      <span class="tech-pill">OAuth2</span>
+      <span class="tech-pill">Node.js</span>
+      <span class="tech-pill">30+ SaaS APIs</span>
+      <span class="tech-pill">JSON-RPC</span>
+      <span class="tech-pill">Zod Validation</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Results</div>
+    <h2>Impact at a Glance</h2>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="number">30+</div>
+        <div class="label">Integrations Built</div>
+      </div>
+      <div class="result-card">
+        <div class="number">1,500+</div>
+        <div class="label">AI-Callable Tools</div>
+      </div>
+      <div class="result-card">
+        <div class="number">20+</div>
+        <div class="label">Hrs/Week Saved</div>
+      </div>
+      <div class="result-card">
+        <div class="number">Any AI</div>
+        <div class="label">Claude, GPT, etc.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Product Preview</div>
+    <h2>Integration Dashboard</h2>
+    <div class="mockup-container">
+      <div class="mockup-titlebar">
+        <span class="mockup-dot r"></span>
+        <span class="mockup-dot y"></span>
+        <span class="mockup-dot g"></span>
+        <div class="mockup-url-bar">mcp-hub.app/integrations</div>
+      </div>
+      <div class="int-list">
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(99,102,241,0.1);">💳</div>
+          <div class="int-info"><div class="int-name">Stripe</div><div class="int-tools">47 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(249,115,22,0.1);">🟠</div>
+          <div class="int-info"><div class="int-name">HubSpot</div><div class="int-tools">62 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(59,130,246,0.1);">☁️</div>
+          <div class="int-info"><div class="int-name">Salesforce</div><div class="int-tools">58 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(255,255,255,0.05);">📝</div>
+          <div class="int-info"><div class="int-name">Notion</div><div class="int-tools">35 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(139,92,246,0.1);">💬</div>
+          <div class="int-info"><div class="int-name">Slack</div><div class="int-tools">28 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(255,255,255,0.05);">🐙</div>
+          <div class="int-info"><div class="int-name">GitHub</div><div class="int-tools">44 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(99,102,241,0.1);">📋</div>
+          <div class="int-info"><div class="int-name">Linear</div><div class="int-tools">31 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(59,130,246,0.1);">🎯</div>
+          <div class="int-info"><div class="int-name">Jira</div><div class="int-tools">39 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon" style="background:rgba(234,179,8,0.1);">📊</div>
+          <div class="int-info"><div class="int-name">Google Sheets</div><div class="int-tools">22 tools</div></div>
+          <div class="int-status"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Want something like this?</h2>
+    <p>Let's connect your AI to the tools your team already uses.</p>
+    <a href="mailto:hello@example.com" class="cta-btn">Get in Touch →</a>
+  </section>
+
+  <footer class="footer">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Built with Claude Code
+    </div>
+  </footer>
+</div>
+</body>
+</html>

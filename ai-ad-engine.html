@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Ad Creative Engine — Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --accent: #00d4ff;
+  --accent-dark: #0099cc;
+  --accent-glow: rgba(0,212,255,0.15);
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111827;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(255,255,255,0.08);
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.06);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0d1520 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* Back link */
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 20px 0; color: var(--text-secondary); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500; transition: color 0.2s;
+}
+.back:hover { color: var(--accent); }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 60px 0 80px;
+  animation: fadeInUp 0.8s ease-out;
+}
+.hero-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 100px;
+  background: var(--accent-glow); border: 1px solid rgba(0,212,255,0.2);
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -0.03em; margin-bottom: 16px;
+}
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero .hook {
+  font-size: 1.25rem; color: var(--text-secondary);
+  font-style: italic; font-weight: 300;
+}
+
+/* Section */
+.section {
+  padding: 60px 0;
+  animation: fadeInUp 0.6s ease-out both;
+}
+.section:nth-child(3) { animation-delay: 0.1s; }
+.section:nth-child(4) { animation-delay: 0.15s; }
+.section:nth-child(5) { animation-delay: 0.2s; }
+
+.section-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px;
+}
+.section h2 {
+  font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.section p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; max-width: 700px; }
+
+/* Glass card */
+.glass {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 32px; backdrop-filter: blur(10px);
+}
+
+/* Solution list */
+.solution-list { list-style: none; margin-top: 20px; }
+.solution-list li {
+  padding: 12px 0; border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary); font-size: 1rem; display: flex; align-items: flex-start; gap: 12px;
+}
+.solution-list li:last-child { border-bottom: none; }
+.solution-list .check {
+  color: var(--accent); font-weight: 700; font-size: 1.1rem; flex-shrink: 0; margin-top: 1px;
+}
+
+/* Flow diagram */
+.flow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+.flow-step {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 20px 14px; text-align: center;
+  position: relative; transition: border-color 0.3s, transform 0.3s;
+}
+.flow-step:hover {
+  border-color: rgba(0,212,255,0.3); transform: translateY(-3px);
+}
+.flow-step .num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-glow); border: 1px solid rgba(0,212,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  margin: 0 auto 12px;
+}
+.flow-step .icon { font-size: 24px; margin-bottom: 8px; }
+.flow-step .label { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+.flow-step .sublabel { font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; }
+/* Arrow between steps */
+.flow-step:not(:last-child)::after {
+  content: '→'; position: absolute; right: -16px; top: 50%;
+  transform: translateY(-50%); color: var(--accent); font-size: 14px; opacity: 0.5;
+}
+
+/* Tech pills */
+.tech-grid {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+}
+.tech-pill {
+  padding: 8px 18px; border-radius: 100px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  font-size: 0.85rem; font-weight: 500; color: var(--text-secondary);
+  transition: border-color 0.2s, color 0.2s;
+}
+.tech-pill:hover { border-color: rgba(0,212,255,0.3); color: var(--accent); }
+
+/* Results grid */
+.results-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px;
+}
+.result-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 28px 20px; text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.result-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-3px); }
+.result-card .number {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 6px;
+}
+.result-card .label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+/* Mockup */
+.mockup-container {
+  margin-top: 24px; border-radius: 16px; overflow: hidden;
+  background: linear-gradient(135deg, #0c1222, #111d33);
+  border: 1px solid var(--glass-border); padding: 24px;
+}
+.mockup-titlebar {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+}
+.mockup-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+}
+.mockup-dot.r { background: #ef4444; }
+.mockup-dot.y { background: #f59e0b; }
+.mockup-dot.g { background: #10b981; }
+.mockup-url-bar {
+  flex: 1; margin-left: 16px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; padding: 0 14px;
+  font-size: 13px; color: var(--text-secondary);
+}
+.mockup-input-area {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.mockup-input-area .icon { color: var(--accent); font-size: 18px; }
+.mockup-input-area .text { color: var(--text-secondary); font-size: 0.9rem; flex: 1; }
+.mockup-input-area .btn {
+  padding: 8px 20px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #000; font-size: 13px; font-weight: 700; white-space: nowrap;
+}
+.mockup-formats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.mockup-format-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 20px; text-align: center;
+  transition: border-color 0.2s;
+}
+.mockup-format-card:hover { border-color: rgba(0,212,255,0.3); }
+.mockup-format-card .fmt-icon { font-size: 28px; margin-bottom: 8px; }
+.mockup-format-card .fmt-label { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); }
+.mockup-format-card .fmt-status {
+  font-size: 0.7rem; color: var(--accent); margin-top: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.mockup-format-card .fmt-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+/* Format content previews */
+.fmt-preview {
+  margin-top: 10px; padding: 8px; border-radius: 6px;
+  background: rgba(0,0,0,0.3); min-height: 40px;
+}
+.fmt-preview-line {
+  height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); margin-bottom: 4px;
+}
+.fmt-preview-line:nth-child(2) { width: 70%; }
+.fmt-preview-line:nth-child(3) { width: 50%; }
+
+/* CTA */
+.cta {
+  text-align: center; padding: 80px 0;
+  animation: fadeInUp 0.6s ease-out both; animation-delay: 0.3s;
+}
+.cta h2 {
+  font-size: 2rem; font-weight: 700; margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.cta p { color: var(--text-secondary); margin-bottom: 28px; font-size: 1.05rem; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #000; font-weight: 700; font-size: 1rem;
+  text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,212,255,0.3);
+}
+
+/* Footer */
+.footer {
+  text-align: center; padding: 40px 0;
+  border-top: 1px solid var(--border-color);
+}
+.footer .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px; color: var(--text-secondary);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero { padding: 40px 0 50px; }
+  .flow { grid-template-columns: 1fr; gap: 8px; }
+  .flow-step:not(:last-child)::after {
+    content: '↓'; right: auto; left: 50%; top: auto; bottom: -14px;
+    transform: translateX(-50%);
+  }
+  .results-grid { grid-template-columns: repeat(2, 1fr); }
+  .mockup-formats { grid-template-columns: 1fr 1fr; }
+  .section h2 { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+  .results-grid { grid-template-columns: 1fr; }
+  .mockup-formats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back">← Back to Portfolio</a>
+
+  <section class="hero">
+    <div class="hero-label">⚡ AI + Creative Automation</div>
+    <h1>AI Ad <span>Creative Engine</span></h1>
+    <p class="hook">"From URL to 6 ad formats in 60 seconds"</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Challenge</div>
+    <h2>Creative at Scale is Broken</h2>
+    <div class="glass">
+      <p>Marketing teams spend <strong style="color:var(--text-primary)">$15K/month</strong> on creative agencies and wait weeks for ad variations. Testing 30 creatives to find 3 winners is too expensive and slow. The entire workflow — from brief to production-ready creative — needs to collapse from weeks to seconds.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The Solution</div>
+    <h2>Brand DNA → Production Ads, Instantly</h2>
+    <p>Built an AI engine that scrapes any website URL, extracts brand DNA (voice, colors, positioning), and generates production-ready ad concepts in 6 formats:</p>
+    <ul class="solution-list">
+      <li><span class="check">✓</span> Scrapes any URL to extract brand voice, colors, and positioning automatically</li>
+      <li><span class="check">✓</span> Claude generates hooks, copy, and ad concepts tailored to the brand</li>
+      <li><span class="check">✓</span> Renders 6 distinct ad formats: memes, iMessage threads, tweets, stat cards, UGC reviews, and billboards</li>
+      <li><span class="check">✓</span> Feedback loop lets users refine and train the model on brand preferences</li>
+      <li><span class="check">✓</span> Zero design skills needed — production-ready output from day one</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section-label">How It Works</div>
+    <h2>5-Step Pipeline</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <div class="icon">🔗</div>
+        <div class="label">Paste URL</div>
+        <div class="sublabel">Any website</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <div class="icon">🔍</div>
+        <div class="label">AI Scrapes Brand</div>
+        <div class="sublabel">Voice, colors, tone</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <div class="icon">✍️</div>
+        <div class="label">Claude Writes Hooks</div>
+        <div class="sublabel">Copy &amp; concepts</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <div class="icon">🎨</div>
+        <div class="label">Renders 6 Formats</div>
+        <div class="sublabel">Production-ready</div>
+      </div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <div class="icon">🔄</div>
+        <div class="label">Feedback Loop</div>
+        <div class="sublabel">Trains the model</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Tech Stack</div>
+    <h2>Built With</h2>
+    <div class="tech-grid">
+      <span class="tech-pill">Claude API</span>
+      <span class="tech-pill">Node.js</span>
+      <span class="tech-pill">Web Scraping</span>
+      <span class="tech-pill">HTML/CSS</span>
+      <span class="tech-pill">Gemini (images)</span>
+      <span class="tech-pill">Puppeteer</span>
+      <span class="tech-pill">Express</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Results</div>
+    <h2>Impact at a Glance</h2>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="number">60s</div>
+        <div class="label">Generation Time</div>
+      </div>
+      <div class="result-card">
+        <div class="number">6</div>
+        <div class="label">Ad Formats Per Run</div>
+      </div>
+      <div class="result-card">
+        <div class="number">50×</div>
+        <div class="label">Creative Output vs Manual</div>
+      </div>
+      <div class="result-card">
+        <div class="number">$0</div>
+        <div class="label">Design Skills Needed</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Product Preview</div>
+    <h2>The Interface</h2>
+    <div class="mockup-container">
+      <div class="mockup-titlebar">
+        <span class="mockup-dot r"></span>
+        <span class="mockup-dot y"></span>
+        <span class="mockup-dot g"></span>
+        <div class="mockup-url-bar">ad-engine.app/generate</div>
+      </div>
+      <div class="mockup-input-area">
+        <span class="icon">🔗</span>
+        <span class="text">https://your-brand.com</span>
+        <span class="btn">Generate Ads →</span>
+      </div>
+      <div class="mockup-formats">
+        <div class="mockup-format-card">
+          <div class="fmt-icon">😂</div>
+          <div class="fmt-label">Meme</div>
+          <div class="fmt-status"><span class="dot"></span> Generated</div>
+          <div class="fmt-preview">
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+          </div>
+        </div>
+        <div class="mockup-format-card">
+          <div class="fmt-icon">💬</div>
+          <div class="fmt-label">iMessage</div>
+          <div class="fmt-status"><span class="dot"></span> Generated</div>
+          <div class="fmt-preview">
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+          </div>
+        </div>
+        <div class="mockup-format-card">
+          <div class="fmt-icon">🐦</div>
+          <div class="fmt-label">Tweet</div>
+          <div class="fmt-status"><span class="dot"></span> Generated</div>
+          <div class="fmt-preview">
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+          </div>
+        </div>
+        <div class="mockup-format-card">
+          <div class="fmt-icon">📊</div>
+          <div class="fmt-label">Stat Card</div>
+          <div class="fmt-status"><span class="dot"></span> Generated</div>
+          <div class="fmt-preview">
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+          </div>
+        </div>
+        <div class="mockup-format-card">
+          <div class="fmt-icon">⭐</div>
+          <div class="fmt-label">UGC Review</div>
+          <div class="fmt-status"><span class="dot"></span> Generated</div>
+          <div class="fmt-preview">
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+          </div>
+        </div>
+        <div class="mockup-format-card">
+          <div class="fmt-icon">🏙️</div>
+          <div class="fmt-label">Billboard</div>
+          <div class="fmt-status"><span class="dot"></span> Generated</div>
+          <div class="fmt-preview">
+            <div class="fmt-preview-line"></div>
+            <div class="fmt-preview-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Want something like this?</h2>
+    <p>Let's talk about automating your creative workflow.</p>
+    <a href="mailto:hello@example.com" class="cta-btn">Get in Touch →</a>
+  </section>
+
+  <footer class="footer">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Built with Claude Code
+    </div>
+  </footer>
+</div>
+</body>
+</html>
